@@ -48,7 +48,8 @@ Installation
 ```cd /tmp/
 git clone https://github.com/luigi1809/webfilter-ng.git
 cd webfilter-ng
-make```
+make
+```
 
 #### For filtering based on dns (default)
 Change IP of DNS from default IP 192.168.2.1 to your setup DNS YOURDNSIP IP (replace YOURDNSIP).
@@ -69,14 +70,16 @@ On a router/gateway that filters trafic (LANINTF is the internal interface - eth
 ```iptables -A FORWARD -i LANINTF -o LANINTF -p tcp -j ACCEPT
 iptables -A FORWARD -i LANINTF -p tcp -m tcp -j NFQUEUE --queue-num 200
 systemctl start netfilter-persistent.service
-systemctl enable netfilter-persistent.service```
+systemctl enable netfilter-persistent.service
+```
 
 On a linux computer (not a router/gateway)  :
 
 ```iptables -A OUTPUT -p tcp -j NFQUEUE --queue-num 200
 iptables-save > /etc/iptables/rules.v4/etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
-systemctl enable netfilter-persistent.service```
+systemctl enable netfilter-persistent.service
+```
 
 Testing
 --------------------
@@ -89,5 +92,3 @@ Thank you to the people that worked on the following project.
 
 https://github.com/farukuzun/notsodeep (dealing with web trafic part)
 https://github.com/Lochnair/xt_tls (reading the TLS header to catch SNI field)
-
-
