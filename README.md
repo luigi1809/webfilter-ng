@@ -49,7 +49,7 @@ See : https://support.opendns.com/hc/en-us/articles/227986807-How-to-Enforcing-G
 and https://www.cwssoft.com/?p=1577
 
 You can also deny access to search engines that does not offer the possibility to enforce safe search by this method (duckduckgo, yandex...). To do so, add some fake entries to db.rpz :
-```www.duckduck.com     A 127.0.0.1```
+```duckduckgo.com     A 127.0.0.1```
 
 
 Requirements
