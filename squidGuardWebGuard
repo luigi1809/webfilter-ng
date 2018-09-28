@@ -1,0 +1,20 @@
+#!/bin/bash
+
+url=$1
+host=`echo $url | sed -E 's|https*://([^/^:]+).*+$|\1|g'`
+srcIP=$2
+dstIP=$3
+sPort=$4
+dPort=$5
+LOGFILE=/var/log/webfilter-ng
+
+resp=`echo "$url ${srcIP}/ - - GET" | squidGuard -P`
+if [ "$resp" != "ERR" ]
+then
+    echo DROP
+    echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE
+else
+    echo ACCEPT
+    echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE
+fi
+exit 0

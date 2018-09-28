@@ -1,0 +1,30 @@
+#!/bin/bash
+
+url=$1
+host=`echo $url | sed -E 's|https*://([^/^:]+).*+$|\1|g'`
+srcIP=$2
+dstIP=$3
+dns=192.168.2.1
+sPort=$4
+dPort=$5
+LOGFILE=/var/log/webfilter-ng
+
+
+[ "$dPort" != "80" ] && [[ $url =~ "http://".* ]] && url=`echo $url | sed -E "s|(http://[^/]+)|\1:$dPort|g"`
+[ "$dPort" != "443" ] && [[ $url =~ "https://".* ]] && url=`echo $url | sed -E "s|(https://[^/]+)|\1:$dPort|g"`
+
+
+#echo $url $host $srcIP $dstIP >>$LOGFILE
+while read line
+do
+	if [ "$line" == "$dstIP" ]
+	then
+		#echo DEB $line >>$LOGFILE
+		echo ACCEPT
+		echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE
+		exit 0
+	fi
+done <<<`dig @${dns} +noall +answer $host | awk '($4=="A") {print $5}' | sort -V`
+echo DROP
+echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE
+exit 0
