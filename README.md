@@ -22,6 +22,14 @@ Two options of usage
 * filtering based on squidGuard
 * filtering based on public dns filtering solution (recommanded)
 
+How does it work
+--------------------
+
+Webfilter-ng reads for :
+* unencrypted HTTP Host field as well as the URI that is requested (URI is useful for squidGuard and not for solution based on public dns filtering solution)
+* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but almost not anymore capable of browsing. New TLS 1.3 is supported as it still haves unencrypted SNI.
+
+
 SquidGuard filtering
 --------------------
 It filters access to websites based on a working installation of squidguard. No need to install squid and configure proxy settings on network computer.
