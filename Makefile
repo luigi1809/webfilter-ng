@@ -19,7 +19,7 @@ uninstall:
 	systemctl daemon-reload; systemctl stop webfilter-ng; systemctl disable webfilter-ng.service; rm -f /usr/sbin/$(PROGRAM); rm -f /usr/bin/webGuard; rm -f /etc/systemd/system/webfilter-ng.service
 
 install: uninstall
-	cp -p $(PROGRAM) /usr/sbin/ ; cp -p webfilter-ng.service /etc/systemd/system/ ; systemctl daemon-reload ; (! [ -f webGuard ] ) && cp -p dnsWebGuard webGuard ; cp -p webGuard /usr/bin/ ; chmod a+x /usr/bin/webGuard; chmod u+x /usr/sbin/$(PROGRAM) ; systemctl daemon-reload ; systemctl start webfilter-ng; systemctl enable webfilter-ng.service
+	cp -p $(PROGRAM) /usr/sbin/ ; cp -p webfilter-ng.service /etc/systemd/system/ ; systemctl daemon-reload ;mkdir /var/cache/webfilter-ng/ ; (! [ -f webGuard ] ) && cp -p dnsWebGuard webGuard ; cp -p webGuard /usr/bin/ ; chmod a+x /usr/bin/webGuard; chmod u+x /usr/sbin/$(PROGRAM) ; systemctl daemon-reload ; systemctl start webfilter-ng; systemctl enable webfilter-ng.service
 
 
 clean:
