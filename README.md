@@ -45,7 +45,7 @@ DNS filtering
 * To do so it compares the IP requested for a website against all the possible IPs provided by the DNS filtering service for the website domain
 * If they do not match, the request is blocked.
 
-For a router/gateway (best option as it will protect all machines behind the gateway), it is recommanded to use bind9 and distribute dns setting with a dhcp server. webfilter-ng will read the dns cache of bind9, which is more performant. It is also ensure that webfilter-ng reads IPs that was offered to the computer by DNS, which could avoid blocking non-unwanted content by mistake.
+For a router/gateway (best option as it will protect all machines behind the gateway), it is mandatory to use a local (i.e. on the routeur/gateway) dns resolver such as bind9 and distribute dns setting with a dhcp server. webfilter-ng will read the dns cache of bind9, which is more performant. It is also ensure that webfilter-ng reads IPs that was offered to the computer by DNS, which could avoid blocking non-unwanted content by mistake.
 
 Enforce usage of safe search on search engines (Bing, Google)
 --------------------
@@ -78,10 +78,11 @@ make
 ```
 
 #### For filtering based on dns (default)
-Change IP of DNS from default IP 192.168.2.1 to your setup DNS YOURDNSIP IP (replace YOURDNSIP).
-If bind9 dns is locally, put the IP of your internal LAN interface or else put the IP of the filtering DNS you use.
+This option requires that a local dns resolver with cache such as bind9 dns is installed and distributed by dhcp on your local network.
 
-```sed -e 's/192.168.2.1/YOURDNSIP/g' -i dnsWebGuard```
+For a bind9 installation. Make sure it listens on 127.0.0.1
+
+```sudo apt-get install bind9```
 
 and 
 ```make dns```
