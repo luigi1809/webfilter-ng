@@ -96,9 +96,11 @@ On a router/gateway that filters trafic (LANINTF is the internal interface - eth
 
 ```
 iptables -A FORWARD -i LANINTF -o LANINTF -p tcp -j ACCEPT
-iptables -A FORWARD -i LANINTF -p udp -m udp --dport 443 -j DROP
-#deny UDP 443 QUIC protocol
+iptables -A FORWARD -i LANINTF -p udp -m udp -j NFQUEUE --queue-num 200
+#Google-QUIC protocol support is experimemental. Use the following if you don't want to use it.
+#iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A FORWARD -i LANINTF -p tcp -m tcp -j NFQUEUE --queue-num 200
+iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```
@@ -106,9 +108,11 @@ systemctl enable netfilter-persistent.service
 On a linux computer (not a router/gateway)  :
 
 ```
-iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
+iptables -A OUTPUT -p udp -m udp --dport 443 -j NFQUEUE --queue-num 200
+#Google-QUIC protocol support is experimemental. Use the following if you don't want to use it.
+#iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A OUTPUT -p tcp -j NFQUEUE --queue-num 200
-iptables-save > /etc/iptables/rules.v4/etc/iptables/rules.v4
+iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```

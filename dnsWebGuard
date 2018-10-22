@@ -2,11 +2,12 @@
 
 url=$1
 host=`echo $url | sed -E 's|https*://([^/^:]+).*+$|\1|g'`
+proto=$4
 srcIP=$2
 dstIP=$3
 dns=127.0.0.1
-sPort=$4
-dPort=$5
+sPort=$5
+dPort=$6
 LOGFILE=/var/log/webfilter-ng
 CACHEDIR=/var/cache/webfilter-ng
 
@@ -29,10 +30,10 @@ do
     if [ "$ip" == "$dstIP" ]
     then
             echo ACCEPT
-            echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE
+            echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE
             exit 0
     fi
 done
 echo DROP
-echo `date +%Y-%m-%d\ %H:%M:%S` $url $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE
+echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE
 exit 0
