@@ -57,7 +57,7 @@ bool webGuard(u_short proto, char **host, char **uri, u_short udp_tcp, char **sa
             break;
         default:
             cmd=strcat(cmd, "\"");
-    }    
+    }
     cmd=strcat(cmd, *host);
     cmd=strcat(cmd, *uri);
     cmd=strcat(cmd, "\" ");
@@ -69,7 +69,7 @@ bool webGuard(u_short proto, char **host, char **uri, u_short udp_tcp, char **sa
     }else{
 	cmd=strcat(cmd, " TCP ");
     }
-    char ports[6];
+    char ports[13];
     sprintf(ports,"%hu %hu",sport,dport);
     cmd=strcat(cmd, ports);
     //printf("Cmd: %s\n", cmd);
@@ -266,9 +266,6 @@ bool check_packet_against_hostname(const unsigned char *packet)
 							uri[0]='\0';
 							printf("SNI: %s\n", host);
 							return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
-							free(saddr);
-							free(daddr);
-							free(host);
 						}
 						extension_offset += extension_len;
 					}
@@ -315,7 +312,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 		//printf("LEN %d\n",udpdatalen);
 	        if (udpdatalen != 1358)
 			return ACCEPT_BOOL;	
-		char *data, *host;
+		char *data;
 		//udp_header = (struct udphdr *)skb_transport_header(skb);
 		// The UDP header is a total of 8 bytes, so the data is at udp_header address + 8 bytes
 		data = (char *)udp_header + 8;
@@ -328,7 +325,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 	
 		offset = base_offset + 17; // Skip data length
 		// Only continue if this is a client hello
-		if ((udpdatalen > (offset+4)) && (strncmp(&data[offset], "CHLO", 4) == 0))
+		if ((udpdatalen > (offset+(u_int)4)) && (strncmp(&data[offset], "CHLO", 4) == 0))
 		{
 			u_int32_t prev_end_offset = 0;
 			u_int16_t tag_number;
@@ -336,13 +333,13 @@ bool check_packet_against_hostname(const unsigned char *packet)
 			int i;
 	
 			offset += 4; // Size of tag
-			if (udpdatalen > (offset+2)){
+			if (udpdatalen > (offset+(u_int)2)){
 			    memcpy(&tag_number, &data[offset], 2);
 			}else{
 			    return ACCEPT_BOOL;
 			}
 			ntohs(tag_number);
-                        //printf("TAG NUMBER%d\n",tag_number);
+                        printf("TAG NUMBER%d\n",tag_number);
 
 	
 			offset += 4; // Size of tag number + padding
@@ -364,16 +361,18 @@ bool check_packet_against_hostname(const unsigned char *packet)
 				    return ACCEPT_BOOL;
 				}
 				ntohs(tag_end_offset);
-				//printf("OFFSET%d\n",tag_end_offset);
+				printf("OFFSET%d\n",tag_end_offset);
 				tag_offset += 4;
 	
 				if (match == 0)
 				{
 					int name_length = tag_end_offset - prev_end_offset;
 	
-					host = malloc(name_length + 1);
+					char *host = malloc(name_length + 1);
 					if (udpdatalen > (base_offset+ tag_number*8+ tag_end_offset)){
 					    strncpy(host, &data[base_offset+ tag_number*8+ prev_end_offset], name_length);;
+					    //// Make sure the string is always null-terminated.
+					    host[name_length] = 0;
 					}else{
 					    return ACCEPT_BOOL;
 					}
@@ -434,8 +433,9 @@ int callback( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *
 	//} else {
                 if (check_packet_against_hostname(packet)) {
                         printf ("Connection dropped\n");
-			return nfq_set_verdict(qh, id, NF_DROP, ntohs(iphdr->tot_len), packet);
-		}else{			return nfq_set_verdict(qh, id, NF_ACCEPT, ntohs(iphdr->tot_len), packet);
+			return nfq_set_verdict(qh, id, NF_ACCEPT, ntohs(iphdr->tot_len), packet);
+		}else{
+			return nfq_set_verdict(qh, id, NF_ACCEPT, ntohs(iphdr->tot_len), packet);
                 }		
 	//}
 }
