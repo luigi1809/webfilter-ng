@@ -433,7 +433,7 @@ int callback( struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *
 	//} else {
                 if (check_packet_against_hostname(packet)) {
                         printf ("Connection dropped\n");
-			return nfq_set_verdict(qh, id, NF_ACCEPT, ntohs(iphdr->tot_len), packet);
+			return nfq_set_verdict(qh, id, NF_DROP, ntohs(iphdr->tot_len), packet);
 		}else{
 			return nfq_set_verdict(qh, id, NF_ACCEPT, ntohs(iphdr->tot_len), packet);
                 }		
