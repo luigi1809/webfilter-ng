@@ -78,7 +78,7 @@ make
 ```
 
 #### For filtering based on dns (default)
-This option requires that a local dns resolver with cache such as bind9 dns is installed and distributed by dhcp on your local network.
+This option requires that a local dns resolver with cache such as bind9 dns is installed and distributed by dhcp on your local network. Otherwise, if installed on a computer, bind9 should be locally installed and set as the dns resolver.
 
 For a bind9 installation. Make sure it listens on 127.0.0.1
 
