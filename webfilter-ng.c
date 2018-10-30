@@ -304,7 +304,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 	}
 	else if (iphdr->protocol == IPPROTO_UDP)
 	{
-		// Base offset, skip to stream ID
+		// Base offset, skip to packet number
 		u_int16_t base_offset = 13;
 		u_int16_t offset;
 		struct udphdr *udp_header = (struct udphdr *) (packet + (iphdr->ihl<<2));
@@ -317,7 +317,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 		// The UDP header is a total of 8 bytes, so the data is at udp_header address + 8 bytes
 		data = (char *)udp_header + 8;
 	
-		// Stream ID must be 1
+		// Packet number must be 1
 		if ( (udpdatalen >base_offset) && (data[base_offset] != 1))
 			return ACCEPT_BOOL;
 		u_short sport=ntohs(udp_header->uh_sport);
