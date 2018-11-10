@@ -100,6 +100,7 @@ and
 ```make list```
 
 ```make install```
+
 Create whitelist or blacklist file in /etc/webfilter-ng/
 
 ```vi etc/webfilter-ng/blacklist```
