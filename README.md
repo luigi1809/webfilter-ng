@@ -17,10 +17,11 @@ Compared to squid + squidGuard :
 Compared to DNS filtering :
 * webfilter-ng ensure that DNS filtering is not bypassed (usage of a non-filtering DNS, local hosts file, usage of DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)) 
 
-Two options of usage
+Three options of usage
 --------------------
 * filtering based on squidGuard
-* filtering based on public dns filtering solution (recommanded)
+* filtering based on public dns filtering solution (recommanded over squidGuard option)
+* filtering based on whitelist / blacklist
 
 How does it work
 --------------------
@@ -59,6 +60,9 @@ and https://www.cwssoft.com/?p=1577
 You can also deny access to search engines that does not offer the possibility to enforce safe search by this method (duckduckgo, yandex...). To do so, add some fake entries to db.rpz :
 ```duckduckgo.com     A 127.0.0.1```
 
+Whitelist / blacklist filtering
+--------------------
+
 
 Requirements
 --------------------
@@ -92,13 +96,31 @@ and
 
 ```make install```
 
+#### For filtering based on whitelist / blacklist
+```make list```
+
+```make install```
+Create whitelist or blacklist file in /etc/webfilter-ng/
+
+```vi etc/webfilter-ng/blacklist```
+
+and add one domain per line. Examples :
+
+```
+www.facebook.com
+*facebook.com
+*.facebook.com
+```
+
+#### For all options, set up lists
+
 On a router/gateway that filters trafic (LANINTF is the internal interface - eth0...):
 
 ```
 iptables -A FORWARD -i LANINTF -o LANINTF -p tcp -j ACCEPT
-iptables -A FORWARD -i LANINTF -p udp -m udp -j NFQUEUE --queue-num 200
-#Google-QUIC protocol support is experimemental. Use the following if you don't want to use it.
-#iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
+#Google-QUIC protocol support is experimemental. Use the following if you want to test it :
+#iptables -A FORWARD -i LANINTF -p udp -m udp -j NFQUEUE --queue-num 200
+iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A FORWARD -i LANINTF -p tcp -m tcp -j NFQUEUE --queue-num 200
 iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
@@ -108,14 +130,16 @@ systemctl enable netfilter-persistent.service
 On a linux computer (not a router/gateway)  :
 
 ```
-iptables -A OUTPUT -p udp -m udp --dport 443 -j NFQUEUE --queue-num 200
-#Google-QUIC protocol support is experimemental. Use the following if you don't want to use it.
-#iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
+#Google-QUIC protocol support is experimemental. Use the following if you want to test it :
+#iptables -A OUTPUT -p udp -m udp --dport 443 -j NFQUEUE --queue-num 200
+iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A OUTPUT -p tcp -j NFQUEUE --queue-num 200
 iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```
+
+Make also sure that you disable IPv6 as it is not yet supported.
 
 Testing
 --------------------
