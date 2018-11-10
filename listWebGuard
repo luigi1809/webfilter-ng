@@ -1,0 +1,32 @@
+#!/bin/bash
+
+url=$1
+host=`echo $url | sed -E 's|https*://([^/^:]+).*+$|\1|g'`
+domain=`echo $host | sed -E 's|^.*\.([a-zA-Z0-9]+\.[a-zA-Z]+)$|\1|g'`
+srcIP=$2
+dstIP=$3
+proto=$4
+sPort=$5
+dPort=$6
+LOGFILE=/var/log/webfilter-ng
+CONFIGDIR=/etc/webfilter-ng
+
+resp=ACCEPT
+if [ -f $CONFIGDIR/whitelist ]
+then
+	resp=DROP
+	grep -v "^*" $CONFIGDIR/whitelist | grep "^$host$" &>/dev/null && resp=ACCEPT
+	grep "^*" $CONFIGDIR/whitelist | sed -e 's|^*\.||g;s|^*||g' | grep "^$domain$" &>/dev/null && resp=ACCEPT
+fi
+
+if [ -f $CONFIGDIR/blacklist ]
+then
+        resp=ACCEPT
+        grep -v "^*" $CONFIGDIR/blacklist | grep "^$host$" &>/dev/null && resp=DROP
+        grep "^*" $CONFIGDIR/blacklist | sed -e 's|^*\.||g;s|^*||g' | grep "^$domain$" &>/dev/null && resp=DROP
+
+fi
+
+echo $resp
+echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort $resp >>$LOGFILE
+exit 0
