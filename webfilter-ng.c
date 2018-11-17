@@ -317,9 +317,9 @@ bool check_packet_against_hostname(const unsigned char *packet)
 		// The UDP header is a total of 8 bytes, so the data is at udp_header address + 8 bytes
 		data = (char *)udp_header + 8;
 	
-		// Packet number must be 1
-		if ( (udpdatalen >base_offset) && (data[base_offset] != 1))
-			return ACCEPT_BOOL;
+		//// Packet number must be 1
+		//if ( (udpdatalen >base_offset) && (data[base_offset] != 1))
+		//	return ACCEPT_BOOL;
 		u_short sport=ntohs(udp_header->uh_sport);
 		u_short dport=ntohs(udp_header->uh_dport);
 	
@@ -379,6 +379,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 					char *uri;
 					uri=malloc(1);
 					uri[0]='\0';
+					host[name_length]='\0';
 					printf("GQUIC-SNI: %s\n", host);
 					return webGuard(HTTPS_PROTO,&host,&uri,UDP_PACKET,&saddr,&daddr,sport,dport);
 				} else {
