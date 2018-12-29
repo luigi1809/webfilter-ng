@@ -14,16 +14,16 @@ Compared to squid + squidGuard :
 * Filtering is transparent (not possible with squid). No need to set up proxy settings on clients.
 * Filtering of http or https TLS trafic does not depends on TCP port (supported in Squid version 4 only). Useful for example for application that use TLS on TCP port 80.
 
-Compared to DNS filtering :
-* webfilter-ng ensure that DNS filtering is not bypassed (usage of a non-filtering DNS, local hosts file, usage of DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)) 
+Compared to classic DNS filtering :
+* webfilter-ng ensure that DNS filtering is not bypassed (i.e. usage of a non-filtering DNS, local hosts file, usage of DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)) 
 
 Three options of usage
 --------------------
 * filtering based on squidGuard
 * filtering based on public dns filtering solution (recommanded over squidGuard option)
-* filtering based on whitelist / blacklist
+* filtering based on whitelist or blacklist
 
-How does it work
+How does it work ?
 --------------------
 
 Webfilter-ng reads for :
@@ -62,7 +62,8 @@ You can also deny access to search engines that does not offer the possibility t
 
 Whitelist / blacklist filtering
 --------------------
-
+* Whitelist : allow access to websites that are on the whitelist. All others are denied.
+* Blacklist : deny access to websites that are on the blacklist. All others are permitted.
 
 Requirements
 --------------------
@@ -102,11 +103,13 @@ and
 
 ```make install```
 
-Create whitelist or blacklist file in /etc/webfilter-ng/
+Create whitelist or blacklist file in /etc/webfilter-ng/ . Note that whitelist and blacklist files cannot be used at the same time.
 
-```vi etc/webfilter-ng/blacklist```
+```/etc/webfilter-ng/blacklist```
+or
+```/etc/webfilter-ng/whitelist```
 
-and add one domain per line. Examples :
+and add one domain per line. Do not add url such https://domain.com or https://domain.com/page.html. Examples :
 
 ```
 www.facebook.com
