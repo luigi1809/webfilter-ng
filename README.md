@@ -69,8 +69,9 @@ Requirements
 
 #### Debian/Ubuntu
 
-```sudo apt-get install build-essential git dnsutils iptables iptables-persistent netfilter-persistent libnetfilter-queue-dev libnetfilter-queue1 libnfnetlink-dev libnfnetlink0```
+```sudo apt install build-essential git dnsutils iptables iptables-persistent netfilter-persistent libnetfilter-queue-dev libnetfilter-queue1 libnfnetlink-dev libnfnetlink0```
 
+Reply "no" if it asks you to save current ipv4/ipv6 rules.
 
 Installation
 --------------------
@@ -119,13 +120,24 @@ On a router/gateway that filters trafic (LANINTF is the internal interface - eth
 
 ```
 iptables -A FORWARD -i LANINTF -o LANINTF -p tcp -j ACCEPT
-#Google-QUIC protocol support is experimemental. Use the following if you want to test it :
+#Google-QUIC protocol is a work-in-progress protocol that is used by Google for their websites. 
+#It is currently recognized by webfilter-ng but future evolution of the protocol might break the support.
+#IETF standard QUIC protocol, which is different from Google-QUIC, is currently not filtered.
+#Use the following if you want to test support for Google-QUIC and leave IETF-QUIC unfiltered :
 #iptables -A FORWARD -i LANINTF -p udp -m udp -j NFQUEUE --queue-num 200
 iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A FORWARD -i LANINTF -p tcp -m tcp -j NFQUEUE --queue-num 200
 iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
+```
+
+Add the following if you use dns based filtering to redirect all dns requests to you router dns resolver. IP_OF_LANINTF is the IP of LANINTF.
+Otherwise, usage of specific dns settings (not learnt by DHCP) on client would drop majority of traffic. 
+```
+iptables -t nat -A PREROUTING -i LANINTF -p udp -m udp --dport 53 -j DNAT --to-destination IP_OF_LANINTF
+iptables-save > /etc/iptables/rules.v4
+systemctl restart netfilter-persistent.service
 ```
 
 On a linux computer (not a router/gateway)  :
@@ -140,7 +152,18 @@ systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```
 
-Make also sure that you disable IPv6 as it is not yet supported.
+On a linux computer or router, make sure to disable IPv6 as it is not yet supported.
+
+```
+ip6tables -I FORWARD -i LANINTF -j REJECT
+ip6tables-save > /etc/iptables/rules.v6
+systemctl restart netfilter-persistent.service
+```
+
+Logs
+--------------------
+Logs are available at :
+```/var/log/webfilter-ng```
 
 Testing
 --------------------
