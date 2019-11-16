@@ -15,7 +15,8 @@ Compared to squid + squidGuard :
 * Filtering of http or https TLS trafic does not depends on TCP port (supported in Squid version 4 only). Useful for example for application that use TLS on TCP port 80.
 
 Compared to classic DNS filtering :
-* webfilter-ng ensure that DNS filtering is not bypassed (i.e. usage of encrypted DNS such as [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) integrated in [modern web browser](https://support.mozilla.org/en-US/kb/firefox-dns-over-https), DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy), non-filtering DNS or local hosts file...) 
+* webfilter-ng works well with [modern web browser](https://support.mozilla.org/en-US/kb/firefox-dns-over-https) that integrates encrypted DNS with [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS). Classic DNS filtering solution does not work anymore with such new browsers as DNS in operating system global settings is not used for web browsing.
+* Also trying to bypass the filtering by implementing other DNS local host files or any kind of encrypted DNS (DoH, DNSSEC, [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)...) is not possible with webfilter-ng
 
 Three options of usage
 --------------------
