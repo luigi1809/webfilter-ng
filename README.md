@@ -4,7 +4,7 @@ Transparent Web Filtering for Linux (standalone computer or router/internet gate
 
 What does it do?
 --------------------
-Check http and https trafic and deny access to unwanted contents based on domain name of http(s) request.
+Filter http(s) web acess based on domain name in the request.
 
 Main advantages of webfilter-ng is
 --------------------
@@ -15,7 +15,7 @@ Compared to squid + squidGuard :
 * Filtering of http or https TLS trafic does not depends on TCP port (supported in Squid version 4 only). Useful for example for application that use TLS on TCP port 80.
 
 Compared to classic DNS filtering :
-* webfilter-ng ensure that DNS filtering is not bypassed (i.e. usage of a non-filtering DNS, local hosts file, usage of DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)) 
+* webfilter-ng ensure that DNS filtering is not bypassed (i.e. usage of encrypted DNS such as [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) integrated in [modern web browser](https://support.mozilla.org/en-US/kb/firefox-dns-over-https, DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy), non-filtering DNS or local hosts file...) 
 
 Three options of usage
 --------------------
