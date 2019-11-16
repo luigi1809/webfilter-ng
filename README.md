@@ -4,7 +4,7 @@ Transparent Web Filtering for Linux (standalone computer or router/internet gate
 
 What does it do?
 --------------------
-Filter http(s) web acess based on domain name in the request.
+Filter http(s) web acess based on domain name in the request (basically Host field in http or SNI in https).
 
 Main advantages of webfilter-ng is
 --------------------
