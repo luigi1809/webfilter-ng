@@ -4,7 +4,7 @@ Transparent Web Filtering for Linux (standalone computer or router/internet gate
 
 What does it do?
 --------------------
-Filter http(s) web acess based on domain name in the request (basically Host field in http or SNI in https).
+Filter http(s) web acess based on domain name in the request (basically Host field in http or SNI in https). 
 
 Main advantages of webfilter-ng is
 --------------------
@@ -29,7 +29,7 @@ How does it work ?
 
 Webfilter-ng reads for :
 * unencrypted HTTP Host field as well as the URI that is requested (URI is useful for squidGuard and not for solution based on public dns filtering solution)
-* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but they are almost not anymore capable of provide a correct browsing experience. New TLS 1.3 is supported as it still haves unencrypted SNI.
+* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but they are almost not anymore capable of provide a correct browsing experience. New TLS 1.3 is supported as it still haves unencrypted SNI. Connection is dropped when SNI is encrypted (draft standard).
 
 
 SquidGuard filtering
