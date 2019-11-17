@@ -136,6 +136,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 	* daddr='\0';
 	strcpy(saddr,inet_ntoa(*(struct in_addr*)&iphdr->saddr));
  	strcpy(daddr,inet_ntoa(*(struct in_addr*)&iphdr->daddr));
+	//printf("daddr: %s\n", daddr);
 	
 	if (iphdr->protocol == IPPROTO_TCP)
 	{
@@ -159,14 +160,14 @@ bool check_packet_against_hostname(const unsigned char *packet)
 		if (data[0] == 0x16)
 		{
 		//If this, it should be an TLS handshake
-			tls_header_len = (data[3] << 8) + data[4] + 5;
+			tls_header_len = (u_int16_t)(data[3] << 8) + (u_int16_t)(data[4] & 0xff);
 			//printf("Data len %d, tcpdatalen %d, tls_header_len %d\n", tcpdatalen, tcpdatalen, tls_header_len);
 			handshake_protocol = data[5];
 		
 			//Even if we don't have all the data, try matching anyway
 			if (tls_header_len > tcpdatalen){
 				//tls_header_len = tcpdatalen;
-				tcpdatalen=tls_header_len+tcpdatalen;
+				tcpdatalen = tls_header_len + tcpdatalen;
 			}
 		
 			if (tls_header_len > 4) {
@@ -213,10 +214,10 @@ bool check_packet_against_hostname(const unsigned char *packet)
 					// Get the length of all the extensions
 					memcpy(&extensions_len, &data[offset], 2);
 					extensions_len = ntohs(extensions_len);
-					////printf("Extensions length: %d\n", extensions_len);
+					//printf("Extensions length: %d\n", extensions_len);
 		
-					if ((extensions_len + offset) > tls_header_len) {
-						////printf("TLS header length is smaller than offset w/extensions (%d > %d)\n", (extensions_len + offset), tls_header_len);
+					if ((extensions_len + offset) > (tls_header_len + 5)) {
+						//printf("TLS header length is smaller than offset w/extensions (%d > %d)\n", (extensions_len + offset), tls_header_len);
 						return ACCEPT_BOOL;
 					}
 		
@@ -233,8 +234,9 @@ bool check_packet_against_hostname(const unsigned char *packet)
 		
 						extension_id = ntohs(extension_id), extension_len = ntohs(extension_len);
 		
-						////printf("Extension ID: %d\n", extension_id);
-						////printf("Extension length: %d\n", extension_len);
+						//printf("Extension ID: %d\n", extension_id);
+						//printf("Extension offset: %d\n", extension_offset);
+						//printf("Extension length: %d\n", extension_len);
 		
 						if (extension_id == 0) {
 							u_int16_t name_length;
@@ -266,6 +268,14 @@ bool check_packet_against_hostname(const unsigned char *packet)
 							uri[0]='\0';
 							printf("SNI: %s\n", host);
 							return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+						} else if (extension_id == 65486) {
+						    char *host = malloc(15);
+						    host = "ENCRYPTED-SNI\0";
+						    char *uri;
+						    uri=malloc(1);
+						    uri[0]='\0';
+						    printf("SNI: [encrypted]\n");
+						    return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
 						}
 						extension_offset += extension_len;
 					}

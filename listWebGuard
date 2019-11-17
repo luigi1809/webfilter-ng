@@ -27,6 +27,8 @@ then
 
 fi
 
+[ "$host" == "ENCRYPTED-SNI" ] && resp=DROP
+
 echo $resp
 echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort $resp >>$LOGFILE
 exit 0

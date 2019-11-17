@@ -10,7 +10,7 @@ dPort=$6
 LOGFILE=/var/log/webfilter-ng
 
 resp=`echo "$url ${srcIP}/ - - GET" | squidGuard -P`
-if [ "$resp" != "ERR" ]
+if [ "$resp" != "ERR" ] || [ "$host" == "ENCRYPTED-SNI" ]
 then
     echo DROP
     echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE

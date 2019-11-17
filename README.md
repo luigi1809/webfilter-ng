@@ -16,11 +16,11 @@ Compared to squid + squidGuard :
 
 Compared to classic DNS filtering :
 * webfilter-ng works well with [modern web browser](https://support.mozilla.org/en-US/kb/firefox-dns-over-https) that integrates encrypted DNS with [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS). Classic DNS filtering solution does not work anymore with such new browsers as DNS in operating system global settings is not used for web browsing.
-* Also trying to bypass the filtering by implementing other DNS local host files or any kind of encrypted DNS (DoH, DNSSEC, [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy)...) is not possible with webfilter-ng
+* Also trying to bypass the filtering by implementing other DNS local host files or any kind of encrypted DNS (DoH - DNS over HTTPS, DoT - DNS over TLS...) is not possible with webfilter-ng
 
 Three options of usage
 --------------------
-* filtering based on squidGuard
+* filtering based on squidGuard (deprecated)
 * filtering based on public dns filtering solution (recommanded over squidGuard option)
 * filtering based on whitelist or blacklist
 
@@ -29,7 +29,7 @@ How does it work ?
 
 Webfilter-ng reads for :
 * unencrypted HTTP Host field as well as the URI that is requested (URI is useful for squidGuard and not for solution based on public dns filtering solution)
-* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but almost not anymore capable of browsing. New TLS 1.3 is supported as it still haves unencrypted SNI.
+* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but they are almost not anymore capable of provide a correct browsing experience. New TLS 1.3 is supported as it still haves unencrypted SNI.
 
 
 SquidGuard filtering
@@ -42,8 +42,8 @@ DNS filtering
 --------------------
 * Use a DNS filtering service - a good one is [Yandex DNS](https://dns.yandex.com/)
 * DNS usually allows the conversion of domain name (i.e. google.fr) to internet IP address (i.e 172.217.18.195)
-* In case an unwanted domain is requested, this kind of DNS responds with a fake IP that did not allow access to the domain website.
-* webfilter-ng checks that the DNS filtering service is properly used (protects against bypass of the filter : usage of a non-filtering DNS, local hosts file, usage of DNSSEC or [DnsCrypt](https://github.com/jedisct1/dnscrypt-proxy))
+* In case an unwanted domain is requested, this kind of DNS replies with a fake IP that did notsquidguard allow access to the domain website.
+* webfilter-ng checks that the DNS filtering service is properly used (protects against bypass of the filter : usage of a non-filtering DNS, local hosts file, usage encrypted DNS, such as DoT or DoH.
 * To do so it compares the IP requested for a website against all the possible IPs provided by the DNS filtering service for the website domain
 * If they do not match, the request is blocked.
 

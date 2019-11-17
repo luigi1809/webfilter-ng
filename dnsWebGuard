@@ -11,6 +11,8 @@ dPort=$6
 LOGFILE=/var/log/webfilter-ng
 CACHEDIR=/var/cache/webfilter-ng
 
+[ "$host" == "ENCRYPTED-SNI" ] && echo DROP && echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE && exit 0
+
 [ "$dPort" != "80" ] && [[ $url =~ "http://".* ]] && url=`echo $url | sed -E "s|(http://[^/]+)|\1:$dPort|g"`
 [ "$dPort" != "443" ] && [[ $url =~ "https://".* ]] && url=`echo $url | sed -E "s|(https://[^/]+)|\1:$dPort|g"`
 
@@ -20,8 +22,6 @@ find $CACHEDIR -cmin +5 -name "*.dns" -exec rm {} \;
 ipList=`dig @${dns} +noall +answer $host | awk '($4=="A") {print $5}'`
 if [ -f $CACHEDIR/$host.dns ]
 then
-	#cacheFileAge=$((`date +%s` - `stat -L --format %Y $CACHEDIR/$host.dns`))    
-	#[ "$cacheFileAge" -le 300 ] && ipList=`cat $CACHEDIR/$host.dns`" "$ipList || rm -f $CACHEDIR/$host.dns
         ipList=`cat $CACHEDIR/$host.dns`" "$ipList 
 fi
 echo $ipList | sed -e 's/ /\n/g' | sort | uniq  >$CACHEDIR/$host.dns
