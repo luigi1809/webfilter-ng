@@ -29,7 +29,7 @@ How does it work ?
 
 Webfilter-ng reads for :
 * unencrypted HTTP Host field as well as the URI that is requested (URI is useful for squidGuard and not for solution based on public dns filtering solution)
-* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but they are almost not anymore capable of provide a correct browsing experience. New TLS 1.3 is supported as it still haves unencrypted SNI. Connection is dropped when SNI is encrypted (draft standard).
+* for TLS connections including HTTPS, it reads the SNI field in TLS client Hello. All modern browsers sends the SNI extension in the client Hello. Very old browser does not but they are almost not anymore capable of provide a correct browsing experience. New TLS 1.3 is supported as it still haves unencrypted SNI. Connection is dropped when [SNI is encrypted](https://github.com/luigi1809/webfilter-ng/issues/4) (draft standard).
 
 
 SquidGuard filtering
