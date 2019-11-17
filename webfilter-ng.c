@@ -268,7 +268,8 @@ bool check_packet_against_hostname(const unsigned char *packet)
 							uri[0]='\0';
 							printf("SNI: %s\n", host);
 							return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
-						} else if (extension_id == 65486) {
+						} else if ((extension_id == 65486) || (extension_id == 65535)) {
+						    // https://tools.ietf.org/html/draft-ietf-tls-esni-01
 						    char *host = malloc(15);
 						    host = "ENCRYPTED-SNI\0";
 						    char *uri;
