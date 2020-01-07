@@ -18,10 +18,11 @@ Compared to classic DNS filtering :
 * webfilter-ng works well with [modern web browser](https://support.mozilla.org/en-US/kb/firefox-dns-over-https) that integrates encrypted DNS with [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS). Classic DNS filtering solution does not work anymore with such new browsers as DNS in operating system global settings is not used for web browsing.
 * Also trying to bypass the filtering by implementing other DNS local host files or any kind of encrypted DNS (DoH - DNS over HTTPS, DoT - DNS over TLS...) is not possible with webfilter-ng
 
-Three options of usage
+Four options of usage
 --------------------
 * filtering based on squidGuard (deprecated)
 * filtering based on public dns filtering solution (recommanded over squidGuard option)
+* filtering based on public dns filtering solution + categorify.org API (recommanded over squidGuard option)
 * filtering based on whitelist or blacklist
 
 How does it work ?
@@ -56,7 +57,7 @@ categorify.org (by cleanbrowsing) is a free API to categorize websites content. 
 
 This option uses advantages of DNS filtering and categorify.org increases filtering reliability. Since categorify.org seems to limit the number of requests per day, API filtering would not be sufficient.
 
-Current implementation only filters adult content
+Current implementation only add reliability to adult content filtering.
 
 Enforce usage of safe search on search engines (Bing, Google)
 --------------------
