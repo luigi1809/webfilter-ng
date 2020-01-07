@@ -13,13 +13,16 @@ CACHEDIR=/var/cache/webfilter-ng
 
 [ "$host" == "ENCRYPTED-SNI" ] && echo DROP && echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE && exit 0
 
+[ "$host" == "categorify.org" ] && echo ACCEPT && exit 0 
+
 [ "$dPort" != "80" ] && [[ $url =~ "http://".* ]] && url=`echo $url | sed -E "s|(http://[^/]+)|\1:$dPort|g"`
 [ "$dPort" != "443" ] && [[ $url =~ "https://".* ]] && url=`echo $url | sed -E "s|(https://[^/]+)|\1:$dPort|g"`
 
+#categorify=$(redis-cli get $host:categorify && redis-cli expire $host:categorify 86400 &>/dev/null)
 categorify=$(redis-cli get $host:categorify)
 if [ "$categorify" == "" ]
 then
-	categ_json=$(curl http://127.0.0.1:3000/api?website=$host -H "Host: categorify.org" 2>/dev/null)
+	categ_json=$(curl --max-time 0.5 http://127.0.0.1:3000/api?website=$host -H "Host: categorify.org" 2>/dev/null)
 	if [ $(jq -n --argjson data "$categ_json" '$data.rating.adult') == "true" ] || [ $(jq -n --argjson data "$categ_json" '$data.rating.nudity') == "true" ]
 	then
 		categorify=1
@@ -27,6 +30,7 @@ then
 		categorify=0
 	fi
 	redis-cli set $host:categorify $categorify &>/dev/null
+        redis-cli expire $host:categorify 86400 &>/dev/null
 fi
 
 #delete unused cache files that was not modified/used during last five minutes

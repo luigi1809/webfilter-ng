@@ -40,7 +40,7 @@ Warning : DNS filtering is recommanded as it does not require maintaining update
 
 DNS filtering
 --------------------
-* Use a DNS filtering service - a good one is [Yandex DNS](https://dns.yandex.com/)
+* Use a DNS filtering service - a good one is [Cleanbrowsing DNS](https://cleanbrowsing.org/)
 * DNS usually allows the conversion of domain name (i.e. google.fr) to internet IP address (i.e 172.217.18.195)
 * In case an unwanted domain is requested, this kind of DNS replies with a fake IP that did notsquidguard allow access to the domain website.
 * webfilter-ng checks that the DNS filtering service is properly used (protects against bypass of the filter : usage of a non-filtering DNS, local hosts file, usage encrypted DNS, such as DoT or DoH.
@@ -48,6 +48,15 @@ DNS filtering
 * If they do not match, the request is blocked.
 
 For a router/gateway (best option as it will protect all machines behind the gateway), it is mandatory to use a local (i.e. on the routeur/gateway) dns resolver such as bind9 and distribute dns setting with a dhcp server. webfilter-ng will read the dns cache of bind9, which is more performant. It is also ensure that webfilter-ng reads IPs that was offered to the computer by DNS, which could avoid blocking non-unwanted content by mistake.
+
+DNS filtering + API categorify.org
+--------------------
+
+categorify.org (by cleanbrowsing) is a free API to categorize websites content. It uses a keyword based artificial intelligence algorithm.
+
+This option uses advantages of DNS filtering and categorify.org increases filtering reliability. Since categorify.org seems to limit the number of requests per day, API filtering would not be sufficient.
+
+Current implementation only filters adult content
 
 Enforce usage of safe search on search engines (Bing, Google)
 --------------------
@@ -93,6 +102,41 @@ For a bind9 installation. Make sure it listens on 127.0.0.1
 
 and 
 ```make dns```
+
+#### For filtering based on dns + categorify.org API
+
+/!\ This option is only available for gateway filtering (not standalone linux computer).
+
+Install local dns resolver - see for filtering based on dns
+
+```
+sudo apt-get install nghttp2 redis-server # debian
+sudo apt-get install nghttp2-proxy redis-server # ubuntu
+
+cp -p /etc/nghttpx/nghttpx.conf /etc/nghttpx/nghttpx.conf.save
+
+cat>/etc/nghttpx/nghttpx.conf <<\EOF
+frontend=127.0.0.1,3000;no-tls
+backend=categorify.org,443;;tls
+errorlog-syslog=yes
+backend-keep-alive-timeout=300
+insecure=yes
+workers=1
+EOF
+
+# nghttpx is used to keep an opened HTTP2 session to categorify.org
+# it speeds up the queries to the API
+
+systemctl restart nghttpx.service
+systemctl enable nghttpx.service
+
+systemctl restart redis-server.service
+systemctl enable redis-server.service
+
+make dns_categorify
+
+make install
+```
 
 #### For filtering based on squidGuard
 ```make squidguard```
