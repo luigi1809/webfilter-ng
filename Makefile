@@ -16,8 +16,7 @@ dns:
 	chmod a+x dnsWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsWebGuard webGuard
 
 dns_categorify:
-	chmod a+x dnsCategorifyWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsCategorifyWebGuard webGuard; cp -pf webfilter-ng.service /tmp/ ; sed -e 's/After=/After=redis-server.service\nAfter=nghttpx.service\nAfter=/g' -i /tmp/webfilter-ng.service
-
+	chmod a+x dnsCategorifyWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsCategorifyWebGuard webGuard; cp -pf webfilter-ng.service /tmp/ ; sed -e 's/After=/After=redis-server.service\nRequires=redis-server.service\nAfter=nghttpx.service\nRequires=nghttpx.service\nAfter=/g' -i /tmp/webfilter-ng.service
 
 list:
 	chmod a+x listWebGuard; rm -f webGuard 2>/dev/null ; cp -pf listWebGuard webGuard
