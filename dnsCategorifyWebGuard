@@ -22,7 +22,7 @@ CACHEDIR=/var/cache/webfilter-ng
 categorify=$(redis-cli get $host:categorify)
 if [ "$categorify" == "" ]
 then
-	categ_json=$(curl --max-time 0.5 http://127.0.0.1:3000/api?website=$host -H "Host: categorify.org" 2>/dev/null)
+	categ_json=$(env LC_NUMERIC="en_US.UTF-8" curl --max-time 0.5 http://127.0.0.1:3000/api?website=$host -H "Host: categorify.org" 2>/dev/null)
 	if [ $(jq -n --argjson data "$categ_json" '$data.rating.adult') == "true" ] || [ $(jq -n --argjson data "$categ_json" '$data.rating.nudity') == "true" ]
 	then
 		categorify=1
