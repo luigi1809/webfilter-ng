@@ -131,8 +131,13 @@ EOF
 systemctl restart nghttpx.service
 systemctl enable nghttpx.service
 
+PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1)
+mkdir /etc/webfilter-ng
+echo $PASSWORD>/etc/webfilter-ng/redis-password
+chmod 600 /etc/webfilter-ng/redis-password
 systemctl restart redis-server.service
 systemctl enable redis-server.service
+redis-cli CONFIG SET requirepass $PASSWORD
 
 make dns_categorify
 
