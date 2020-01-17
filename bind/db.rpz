@@ -410,6 +410,7 @@ www.google.co.zw	CNAME forcesafesearch.google.com.
 www.bing.com    CNAME strict.bing.com.
 bing.com    CNAME strict.bing.com.
 c.bing.com	CNAME strict.bing.com.
+duckduckgo.com	CNAME safe.duckduckgo.com.
 apresolve.spotify.com	A 107.170.15.247
 yandex.aaa	A	127.0.0.1
 yandex.aarp	A	127.0.0.1

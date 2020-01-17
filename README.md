@@ -68,8 +68,8 @@ To do so, it is recommanded to install bind9 rpz zone and distribute dns setting
 See : https://support.opendns.com/hc/en-us/articles/227986807-How-to-Enforcing-Google-SafeSearch-YouTube-and-Bing
 and https://www.cwssoft.com/?p=1577
 
-You can also deny access to search engines that does not offer the possibility to enforce safe search by this method (duckduckgo, yandex...). To do so, add some fake entries to db.rpz :
-```duckduckgo.com     A 127.0.0.1```
+You can also deny access to search engines that does not offer the possibility to enforce safe search by this method (yandex, etc...). To do so, add some fake entries to db.rpz :
+```yandex.com     A 127.0.0.1```
 
 Whitelist / blacklist filtering
 --------------------
