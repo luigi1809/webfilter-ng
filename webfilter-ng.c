@@ -216,7 +216,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 					extensions_len = ntohs(extensions_len);
 					//printf("Extensions length: %d\n", extensions_len);
 		
-					if ((extensions_len + offset) > (tls_header_len + 5)) {
+					if ((extensions_len + offset) > (tls_header_len + (unsigned int)5)) {
 						//printf("TLS header length is smaller than offset w/extensions (%d > %d)\n", (extensions_len + offset), tls_header_len);
 						return ACCEPT_BOOL;
 					}
@@ -297,7 +297,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 				memcpy(uri, data+4,i-4);
 				uri[i-4]='\0';
 				////printf("URI %s\n",uri);
-				for(i; i<tcpdatalen ; i++){	
+				for(i=0; i<tcpdatalen ; i++){	
 					if((data[i] == 'H' || data[i] == 'h') && (data[i+1] == 'O' || data[i+1] == 'o') && (data[i+2] == 's'|| data[i+2] == 's') && (data[i+3] == 'T' || data[i+3] == 't') && data[i+4] == ':'){
 						int j=i+6;
 						for(i=i+6; i<tcpdatalen && data[i] != '\r' ; i++){}
