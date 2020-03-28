@@ -3,8 +3,6 @@ dig +noall +answer www.google.com | awk '($4=="A") {print $5}' | head -n1 >/tmp/
 google=$(cat /tmp/google)
 
 # test with forcing IP HTTP
-
-curl 
 echo test with forcing IP HTTP
 [ "$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" --resolve www.google.com:80:$google http://www.google.com/)" == "200" ] || exit 1
 
