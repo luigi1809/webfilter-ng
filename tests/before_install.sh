@@ -16,7 +16,7 @@ frontend=127.0.0.1,3000;no-tls
 backend=categorify.org,443;;tls
 errorlog-syslog=no
 backend-keep-alive-timeout=300
-insecure=yes
+#insecure=yes
 workers=1
 EOF
 
