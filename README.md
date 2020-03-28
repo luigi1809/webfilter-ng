@@ -1,3 +1,4 @@
+![build](https://travis-ci.org/luigi1809/webfilter-ng.svg?branch=master)
 # webfilter-ng
 Transparent Web Filtering for Linux (standalone computer or router/internet gateway)
 
