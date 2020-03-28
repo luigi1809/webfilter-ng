@@ -1,7 +1,7 @@
 #!/bin/bash
-:
 url=$1
 host=`echo $url | sed -E 's|https*://([^/^:]+).*+$|\1|g'`
+domain=`echo $host | sed -E 's|^.*\.([a-zA-Z0-9]+\.[a-zA-Z]+)$|\1|g'`
 proto=$4
 srcIP=$2
 dstIP=$3
@@ -9,14 +9,22 @@ dns=127.0.0.1
 sPort=$5
 dPort=$6
 LOGFILE=/var/log/webfilter-ng
+CONFIGDIR=/etc/webfilter-ng
 CACHEDIR=/var/cache/webfilter-ng
 REDISPASS=$(cat /etc/webfilter-ng/redis-password)
+
 [ "$host" == "ENCRYPTED-SNI" ] && echo DROP && echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort DROP >>$LOGFILE && exit 0
 
 [ "$host" == "categorify.org" ] && echo ACCEPT && exit 0 
 
 [ "$dPort" != "80" ] && [[ $url =~ "http://".* ]] && url=`echo $url | sed -E "s|(http://[^/]+)|\1:$dPort|g"`
 [ "$dPort" != "443" ] && [[ $url =~ "https://".* ]] && url=`echo $url | sed -E "s|(https://[^/]+)|\1:$dPort|g"`
+
+if [ -f $CONFIGDIR/whitelist ]
+then
+	grep -v "^*" $CONFIGDIR/whitelist | grep "^$host$" &>/dev/null && echo ACCEPT && echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE && exit 0
+	grep "^*" $CONFIGDIR/whitelist | sed -e 's|^*\.||g;s|^*||g' | grep "^$domain$" &>/dev/null && echo ACCEPT && echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE && exit 0
+fi
 
 #categorify=$(redis-cli -a "$REDISPASS" get $host:categorify && redis-cli -a "$REDISPASS" expire $host:categorify 86400 &>/dev/null)
 categorify=$(redis-cli -a "$REDISPASS" get $host:categorify)

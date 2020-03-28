@@ -33,4 +33,6 @@ install:
 script:
   - sudo bash ./tests/after_install.sh
   - bash ./tests/after_tests.sh
-
+  - make dns_categorify
+  - make install
+  - bash ./tests/after_tests.sh

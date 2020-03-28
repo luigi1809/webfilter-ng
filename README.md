@@ -124,6 +124,19 @@ insecure=yes
 workers=1
 EOF
 
+# or old configuration file for ubuntu xenial
+cat>/etc/nghttpx/nghttpx.conf <<\EOF
+frontend=127.0.0.1,3000
+backend=categorify.org,443
+frontend-no-tls=yes
+backend-no-tls=no
+errorlog-syslog=yes
+#insecure=yes
+backend-keep-alive-timeout=300
+http2-bridge=yes
+workers=1
+EOF
+
 # nghttpx is used to keep an opened HTTP2 session to categorify.org
 # it speeds up the queries to the API
 
