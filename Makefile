@@ -10,16 +10,16 @@ webfilter-ng: webfilter-ng.c
 	$(CC) $(SOURCE) $(CFLAGS) $(LIBS) -o $(PROGRAM)
 	cp -pf webfilter-ng.service /tmp/
 squidguard:
-	chmod a+x squidGuardWebGuard; rm -f webGuard 2>/dev/null ; cp -pf squidGuardWebGuard webGuard
+	chmod a+x squidGuardWebGuard; rm -f webGuard 2>/dev/null ; cp -pf squidGuardWebGuard webGuard; cp -pf webfilter-ng.service /tmp/
 
 dns:
-	chmod a+x dnsWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsWebGuard webGuard
+	chmod a+x dnsWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsWebGuard webGuard; cp -pf webfilter-ng.service /tmp/
 
 dns_categorify:
 	chmod a+x dnsCategorifyWebGuard; rm -f webGuard 2>/dev/null ; cp -pf dnsCategorifyWebGuard webGuard; cp -pf webfilter-ng.service /tmp/ ; sed -e 's/After=/After=redis-server.service\nRequires=redis-server.service\nAfter=nghttpx.service\nRequires=nghttpx.service\nAfter=/g' -i /tmp/webfilter-ng.service
 
 list:
-	chmod a+x listWebGuard; rm -f webGuard 2>/dev/null ; cp -pf listWebGuard webGuard
+	chmod a+x listWebGuard; rm -f webGuard 2>/dev/null ; cp -pf listWebGuard webGuard; cp -pf webfilter-ng.service /tmp/
 
 uninstall:
 	systemctl daemon-reload; systemctl stop webfilter-ng; systemctl disable webfilter-ng.service; rm -f /usr/sbin/$(PROGRAM); rm -f /usr/bin/webGuard; rm -f /etc/systemd/system/webfilter-ng.service

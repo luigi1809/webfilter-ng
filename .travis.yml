@@ -22,7 +22,7 @@ addons:
       - jq
 
 before_install:
-  - bash -c '[ "$(curl -s -o /dev/null -w "%{http_code}" https://www.google.com/)" == "200" ]'
+  - bash ./tests/before_tests.sh
   - sudo bash ./tests/before_install.sh
 
 install:
@@ -32,5 +32,5 @@ install:
 
 script:
   - sudo bash ./tests/after_install.sh
-  - bash -c '[ "$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" https://www.google.com/)" == "200" ]'
-  - cat /var/log/webfilter-ng
+  - bash ./tests/after_tests.sh
+
