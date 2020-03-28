@@ -3,12 +3,14 @@ dig +noall +answer www.google.com | awk '($4=="A") {print $5}' | head -n1 >/tmp/
 google=$(cat /tmp/google)
 
 # test with forcing IP HTTP
+
+curl 
 echo test with forcing IP HTTP
-[ "$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" http://$google/ -H "Host: www.google.com")" == "200" ] || exit 1
+[ "$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" --resolve www.google.fr:80:$google http://www.google.com/)" == "200" ] || exit 1
 
 # test with forcing IP HTTPS
 echo test with forcing IP HTTPS
-[ "$(curl -k --max-time 5 -s -o /dev/null -w "%{http_code}" https://$google/ -H "Host: www.google.com")" == "200" ] || exit 1
+[ "$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" --resolve www.google.fr:443:$google https://www.google.com/)" == "200" ] || exit 1
 
 # test without forcing IP HTTP
 echo test without forcing IP HTTP
