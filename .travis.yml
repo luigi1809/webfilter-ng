@@ -1,7 +1,13 @@
 # validator https://config.travis-ci.com/explore
 language: c
-os: linux
-dist:  bionic
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+      env: DISTRIB=bionic
+    - os: linux
+      dist: xenial
+      env: DISTRIB=xenial
 
 addons:
   apt:
