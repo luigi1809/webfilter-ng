@@ -1,0 +1,36 @@
+# validator https://config.travis-ci.com/explore
+language: c
+os: linux
+dist:  bionic
+
+addons:
+  apt:
+    packages:
+      - build-essential
+      - git
+      - dnsutils
+      - iptables
+      - iptables-persistent
+      - netfilter-persistent
+      - libnetfilter-queue-dev
+      - libnetfilter-queue1
+      - libnfnetlink-dev
+      - libnfnetlink0
+      - bind9
+      - nghttp2
+      - redis-server
+      - jq
+
+before_install:
+  - bash -c '[ "$(curl -s -o /dev/null -w "%{http_code}" https://www.google.com/)" == "200" ]'
+  - sudo bash ./tests/before_install.sh
+
+install:
+  - make
+  - make dns_categorify
+  - sudo make install
+
+script:
+  - bash -c '[ "$(curl -s -o /dev/null -w "%{http_code}" https://www.google.com/)" == "200" ]'
+  - sudo bash ./tests/after_install.sh
+  - cat /var/log/webfilter-ng

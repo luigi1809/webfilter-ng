@@ -111,8 +111,7 @@ and
 Install local dns resolver - see for filtering based on dns
 
 ```
-sudo apt-get install nghttp2 redis-server jq # debian
-sudo apt-get install nghttp2-proxy redis-server jq # ubuntu
+sudo apt-get install nghttp2 redis-server jq
 
 cp -p /etc/nghttpx/nghttpx.conf /etc/nghttpx/nghttpx.conf.save
 
