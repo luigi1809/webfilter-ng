@@ -6,6 +6,9 @@ systemctl restart bind9.service
 systemctl enable bind9.service
 systemctl status bind9.service
 
+categorify=$(dig +noall +answer categorify.org | awk '($4=="A") {print $5}')
+printf "$categorify\tcategorify.org\n">>/etc/hosts
+
 cp -p /etc/nghttpx/nghttpx.conf /etc/nghttpx/nghttpx.conf.save
 
 cat>/etc/nghttpx/nghttpx.conf <<\EOF
