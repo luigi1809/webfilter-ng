@@ -32,12 +32,16 @@ http2-bridge=yes
 workers=1
 EOF
 
+cat /etc/nghttpx/nghttpx.conf
+
 # nghttpx is used to keep an opened HTTP2 session to categorify.org
 # it speeds up the queries to the API
 
 systemctl restart nghttpx.service
 systemctl enable nghttpx.service
-systemctl status nghttpx.service
+systemctl status nghttpx.service | cat
+
+nghttpx -v
 
 PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1)
 mkdir /etc/webfilter-ng
