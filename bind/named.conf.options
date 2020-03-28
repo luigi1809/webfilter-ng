@@ -23,8 +23,8 @@ options {
 	auth-nxdomain no;    # conform to RFC1035
 	#listen-on-v6 { any; };
 	listen-on-v6 { none; };
-	listen-on { 127.0.0.1; 192.168.2.1; };
-	forwarders { 77.88.8.7; 77.88.8.3;};
+	listen-on { 127.0.0.1; };
+	forwarders { 185.228.168.168;};
 	response-policy { zone "rpz"; };
 
 };

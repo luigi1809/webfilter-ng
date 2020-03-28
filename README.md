@@ -204,10 +204,11 @@ iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```
-Add the following if you use dns based filtering to redirect all dns requests to you router dns resolver. IP_OF_LANINTF is the IP of LANINTF.
+Add the following if you use dns based filtering to redirect all dns requests to you local dns resolver. EXTERNAL_DNS_IP is the IP of external dns configured in dns server.
 Otherwise, usage of specific dns settings (not learnt by DHCP) on client would drop majority of traffic. 
 ```
-iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1
+iptables -t nat -A OUTPUT -d EXTERNAL_DNS_IP -p udp -m udp --dport 53 -j DNAT --to-destination EXTERNAL_DNS_IP
+iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1
 iptables-save > /etc/iptables/rules.v4
 systemctl restart netfilter-persistent.service
 ```

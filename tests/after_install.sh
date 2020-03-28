@@ -7,6 +7,7 @@ iptables -A OUTPUT -p udp -m udp --dport 443 -j NFQUEUE --queue-num 200
 # iptables -A OUTPUT -p udp -m udp --dport 443 -j DROP
 iptables -A OUTPUT -d $categorify -p tcp -m tcp --dport 443 -j ACCEPT
 iptables -A OUTPUT -p tcp -j NFQUEUE --queue-num 200
+iptables -t nat -A OUTPUT -d 185.228.168.168 -p udp -m udp --dport 53 -j DNAT --to-destination 185.228.168.168
 iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1
 iptables-save
 iptables-save > /etc/iptables/rules.v4
