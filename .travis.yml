@@ -27,7 +27,7 @@ before_install:
 
 install:
   - make
-  - make dns_categorify
+  - make dns
   - sudo make install
 
 script:
