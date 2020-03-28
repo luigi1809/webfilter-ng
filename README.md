@@ -204,6 +204,15 @@ iptables-save > /etc/iptables/rules.v4
 systemctl start netfilter-persistent.service
 systemctl enable netfilter-persistent.service
 ```
+Add the following if you use dns based filtering to redirect all dns requests to you router dns resolver. IP_OF_LANINTF is the IP of LANINTF.
+Otherwise, usage of specific dns settings (not learnt by DHCP) on client would drop majority of traffic. 
+```
+iptables -t nat -D OUTPUT -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1
+iptables-save > /etc/iptables/rules.v4
+systemctl restart netfilter-persistent.service
+```
+
+
 
 On a linux computer or router, make sure to disable IPv6 as it is not yet supported.
 
