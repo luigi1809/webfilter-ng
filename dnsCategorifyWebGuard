@@ -17,8 +17,12 @@ REDISPASS=$(cat /etc/webfilter-ng/redis-password)
 
 [ "$host" == "categorify.org" ] && echo ACCEPT && exit 0 
 
-[ "$dPort" != "80" ] && [[ $url =~ "http://".* ]] && url=`echo $url | sed -E "s|(http://[^/]+)|\1:$dPort|g"`
-[ "$dPort" != "443" ] && [[ $url =~ "https://".* ]] && url=`echo $url | sed -E "s|(https://[^/]+)|\1:$dPort|g"`
+if [[ $host =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] 
+then
+	echo ACCEPT
+        echo `date +%Y-%m-%d\ %H:%M:%S` $url $proto $srcIP:$sPort $dstIP:$dPort ACCEPT >>$LOGFILE
+        exit 0
+fi	
 
 if [ -f $CONFIGDIR/whitelist ]
 then
