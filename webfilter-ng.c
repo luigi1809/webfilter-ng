@@ -77,6 +77,7 @@ bool webGuard(u_short proto, char **host, char **uri, u_short udp_tcp, char **sa
     char buffer[100];
     fscanf(file, "%100s", buffer);
     pclose(file);
+    free(cmd);
     //printf("buffer is: %s\n", buffer);
     if (strstr(buffer, "ACCEPT") != NULL) {
         return ACCEPT_BOOL;
@@ -264,19 +265,29 @@ bool check_packet_against_hostname(const unsigned char *packet)
 							//// Make sure the string is always null-terminated.
 							host[name_length] = 0;
 							char *uri;
-							uri=malloc(1);
+							uri = malloc(1);
 							uri[0]='\0';
 							printf("SNI: %s\n", host);
-							return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+							bool ret_bool =  webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+                            if(uri) free(uri);
+                            if(host) free(host);
+                            if(saddr) free(saddr);
+                            if(daddr) free(daddr);
+                            return ret_bool;
 						} else if ((extension_id == 65486) || (extension_id == 65535)) {
 						    // https://tools.ietf.org/html/draft-ietf-tls-esni-01
 						    char *host = malloc(15);
 						    host = "ENCRYPTED-SNI\0";
 						    char *uri;
-						    uri=malloc(1);
+						    uri = malloc(1);
 						    uri[0]='\0';
 						    printf("SNI: [encrypted]\n");
-						    return webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+						    bool ret_bool = webGuard(HTTPS_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+                            if(uri) free(uri);
+                            if(host) free(host);
+                            if(saddr) free(saddr);
+                            if(daddr) free(daddr);
+                            return ret_bool;
 						}
 						extension_offset += extension_len;
 					}
@@ -293,7 +304,7 @@ bool check_packet_against_hostname(const unsigned char *packet)
 				////printf("GET\n");
 				for(i=4; i<tcpdatalen && data[i] != '\r' && data[i] != ' '; i++){}
 				////printf("i %d\n",i);
-				uri=malloc(i-2);
+				uri = malloc(i-2);
 				memcpy(uri, data+4,i-4);
 				uri[i-4]='\0';
 				////printf("URI %s\n",uri);
@@ -301,12 +312,17 @@ bool check_packet_against_hostname(const unsigned char *packet)
 					if((data[i] == 'H' || data[i] == 'h') && (data[i+1] == 'O' || data[i+1] == 'o') && (data[i+2] == 's'|| data[i+2] == 's') && (data[i+3] == 'T' || data[i+3] == 't') && data[i+4] == ':'){
 						int j=i+6;
 						for(i=i+6; i<tcpdatalen && data[i] != '\r' ; i++){}
-						host=malloc(i-j+1);
+						host = malloc(i-j+1);
 						*host='\0';
 						memcpy(host, data+j,i-j);
 						host[i-j]='\0';
 						printf("URL http://%s%s\n",host,uri);
-						return webGuard(HTTP_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+						bool ret_bool = webGuard(HTTP_PROTO,&host,&uri,TCP_PACKET,&saddr,&daddr,sport,dport);
+                        if(uri) free(uri);
+                        if(host) free(host);
+                        if(saddr) free(saddr);
+                        if(daddr) free(daddr);
+                        return ret_bool;
 					}
 				}
 			}
@@ -388,11 +404,16 @@ bool check_packet_against_hostname(const unsigned char *packet)
 					    return ACCEPT_BOOL;
 					}
 					char *uri;
-					uri=malloc(1);
+					uri = malloc(1);
 					uri[0]='\0';
 					host[name_length]='\0';
 					printf("GQUIC-SNI: %s\n", host);
-					return webGuard(HTTPS_PROTO,&host,&uri,UDP_PACKET,&saddr,&daddr,sport,dport);
+					bool ret_bool = (HTTPS_PROTO,&host,&uri,UDP_PACKET,&saddr,&daddr,sport,dport);
+                    if(uri) free(uri);
+                    if(host) free(host);
+                    if(saddr) free(saddr);
+                    if(daddr) free(daddr);
+                    return ret_bool;
 				} else {
 					prev_end_offset = tag_end_offset;
 				}
