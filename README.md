@@ -44,7 +44,7 @@ DNS filtering
 --------------------
 * Use a DNS filtering service - a good one is [Cleanbrowsing DNS](https://cleanbrowsing.org/)
 * DNS usually allows the conversion of domain name (i.e. google.fr) to internet IP address (i.e 172.217.18.195)
-* In case an unwanted domain is requested, this kind of DNS replies with a fake IP that did notsquidguard allow access to the domain website.
+* In case an unwanted domain is requested, this kind of DNS replies with a fake IP that did not allow access to the domain website.
 * webfilter-ng checks that the DNS filtering service is properly used (protects against bypass of the filter : usage of a non-filtering DNS, local hosts file, usage encrypted DNS, such as DoT or DoH.
 * To do so it compares the IP requested for a website against all the possible IPs provided by the DNS filtering service for the website domain
 * If they do not match, the request is blocked.
